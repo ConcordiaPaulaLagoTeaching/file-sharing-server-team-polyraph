@@ -1,4 +1,3 @@
-package tests;
 
 import helpers.*;
 import org.junit.jupiter.api.*;
@@ -112,10 +111,6 @@ public class ThreadManagementTests {
 
         assertTrue(finished, "Possible deadlock: not all threads finished");
     }
-
-
-
-
 
 
 }
