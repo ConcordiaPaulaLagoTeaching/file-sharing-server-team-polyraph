@@ -5,7 +5,7 @@ public class ServerMain {
         int port = 12345;
         String diskName = "serverdiskolo.dat";
 
-        FileServer server = new FileServer(port, diskName);
+        FileServer server = new FileServer(port, diskName, 10 * 128);
         server.start();
     }
 }

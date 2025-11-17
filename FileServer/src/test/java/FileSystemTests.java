@@ -1,6 +1,5 @@
-package ca.concordia.filesystem;
 
-import ca.concordia.filesystem.datastructures.FileSystemManager;
+import ca.concordia.filesystem.FileSystemManager;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -21,7 +20,8 @@ public class FileSystemTests {
         }
 
         // Create new fresh filesystem for EACH test
-        fs = new FileSystemManager("testfs.dat");
+        fs = new FileSystemManager("testfs.dat", 10 * 128);
+        
     }
 
     @Test

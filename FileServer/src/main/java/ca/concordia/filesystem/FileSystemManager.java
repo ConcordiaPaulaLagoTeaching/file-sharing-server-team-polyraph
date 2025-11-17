@@ -1,15 +1,19 @@
-package ca.concordia.filesystem.datastructures;
+package ca.concordia.filesystem;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.concurrent.locks.*;
+
+import ca.concordia.filesystem.datastructures.FEntry;
+import ca.concordia.filesystem.datastructures.FNode;
 
 public class FileSystemManager {
 
     private static final int MAX_FILES = 5;
     private static final int MAX_BLOCKS = 10;
     private static final int BLOCK_SIZE = 128;
-    private static final int MAX_FILENAME_LENGTH = 10;
+    private static final int MAX_FILENAME_LENGTH = 11;
+    private static FileSystemManager instance = null;
 
     private final FEntry[] fileTable;
     private final FNode[] nodeTable;
@@ -21,7 +25,15 @@ public class FileSystemManager {
     private final Lock readLock = rw.readLock();
     private final Lock writeLock = rw.writeLock();
 
-    public FileSystemManager(String filename) {
+    public static synchronized FileSystemManager getInstance(String filename, int totalSize) throws IOException {
+        if (instance == null) {
+            instance = new FileSystemManager(filename, totalSize);
+        }
+        return instance;
+    }
+
+
+    public FileSystemManager(String filename, int totalSize) {
         try {
             this.disk = new RandomAccessFile(filename, "rw");
         } catch (IOException e) {

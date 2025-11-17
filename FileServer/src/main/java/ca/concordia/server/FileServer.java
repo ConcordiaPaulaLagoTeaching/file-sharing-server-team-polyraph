@@ -1,6 +1,6 @@
 package ca.concordia.server;
 
-import ca.concordia.filesystem.datastructures.FileSystemManager;
+import ca.concordia.filesystem.FileSystemManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -8,32 +8,35 @@ import java.net.Socket;
 
 public class FileServer {
 
-    private final int port;
     private final FileSystemManager fsManager;
+    private final int port;
 
-    public FileServer(int port, String diskName) {
+    public FileServer(int port, String fileSystemName, int totalSize){
+        try {
+            this.fsManager = FileSystemManager.getInstance(fileSystemName, totalSize);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to initialize FileSystemManager", e);
+        }
         this.port = port;
-        this.fsManager = new FileSystemManager(diskName);
     }
 
-    public void start() {
-        System.out.println("Starting server on port " + port + "...");
-
+    public void start(){
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server is running. Waiting for clients...");
+            System.out.println("Server started. Listening on port " + port + "...");
 
             while (true) {
+                // Accept a new client
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket.getInetAddress());
+                System.out.println("Client connected: " + clientSocket);
 
-                // MULTITHREADING — required
+                // Create ClientHandler and launch in new thread
                 ClientHandler handler = new ClientHandler(clientSocket, fsManager);
-                Thread t = new Thread(handler);
-                t.start();
+                new Thread(handler).start();
             }
 
-        } catch (IOException e) {
-            System.out.println("Server error: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Could not start server on port " + port);
         }
     }
 }

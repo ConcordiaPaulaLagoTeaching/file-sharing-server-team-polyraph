@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello and welcome!");
 
-        FileServer server = new FileServer(12345, "filesystem.dat");
+        FileServer server = new FileServer(12345, "filesystem.dat", 10 * 1);
 
         server.start();
     }
